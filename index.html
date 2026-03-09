@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Granite & Marble Tile Calculator - 40×40 & 50×50</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 3px solid #764ba2;
+            padding-bottom: 15px;
+        }
+
+        .tile-selector {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .selector-title {
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .tile-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tile-card {
+            flex: 1;
+            min-width: 180px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tile-card.selected {
+            border-color: #764ba2;
+            background: #f3e8ff;
+            transform: scale(1.02);
+        }
+
+        .tile-card:hover {
+            border-color: #764ba2;
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
+        }
+
+        .tile-size {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tile-details {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .tile-details strong {
+            color: #764ba2;
+        }
+
+        .check-mark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #764ba2;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .tile-card.selected .check-mark {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .input-field {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .unit {
+            font-size: 18px;
+            font-weight: 600;
+            color: #666;
+            padding-right: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .selected-info {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #764ba240;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selected-badge {
+            background: #764ba2;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .breakdown {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .breakdown-title {
+            color: #764ba2;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            color: #555;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+
+        .highlight {
+            color: #764ba2;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .note {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 8px;
+            color: #856404;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .calculator-container {
+                padding: 20px;
+            }
+            
+            .result-value {
+                font-size: 20px;
+            }
+            
+            .tile-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>🧱 TAT Granite & Marble Calculator</h1>
+        
+        <div class="tile-selector">
+            <div class="selector-title">Select Tile Size:</div>
+            <div class="tile-options">
+                <!-- 40×40 Option -->
+                <div class="tile-card" id="tile40" onclick="selectTile(40)">
+                    <div class="check-mark">✓</div>
+                    <div class="tile-size">40 × 40 cm</div>
+                    <div class="tile-details">📐 Area: <strong>0.16 m²</strong> per piece</div>
+                    <div class="tile-details">📦 Carton: <strong>5 pieces</strong></div>
+                </div>
+                
+                <!-- 50×50 Option -->
+                <div class="tile-card" id="tile50" onclick="selectTile(50)">
+                    <div class="check-mark">✓</div>
+                    <div class="tile-size">50 × 50 cm</div>
+                    <div class="tile-details">📐 Area: <strong>0.25 m²</strong> per piece</div>
+                    <div class="tile-details">📦 Carton: <strong>4 pieces</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="area">Enter Customer's Area Requirement:</label>
+            <div class="input-field">
+                <input type="number" id="area" placeholder="Enter area in m²" step="0.01" min="0">
+                <span class="unit">m²</span>
+            </div>
+        </div>
+
+        <button onclick="calculateTiles()">Calculate Requirements</button>
+
+        <div class="result-section" id="resultSection" style="display: none;">
+            <div class="selected-info" id="selectedInfo">
+                <span id="selectedTileText">40×40 cm selected</span>
+                <span class="selected-badge" id="selectedBadge">5 pcs/carton</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Area to cover:</span>
+                <span class="result-value" id="displayArea">0 m²</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Pieces needed:</span>
+                <span class="result-value" id="displayPieces">0</span>
+            </div>
+            
+            <div class="breakdown">
+                <div class="breakdown-title">📦 Packaging Breakdown</div>
+                <div class="breakdown-item">
+                    <span>Full cartons:</span>
+                    <span class="highlight" id="displayCartons">0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Individual pieces:</span>
+                    <span class="highlight" id="displayIndividualPieces">0</span>
+                </div>
+                <div class="breakdown-item" style="border-top: 2px dashed #e0e0e0; margin-top: 8px; padding-top: 12px;">
+                    <span style="font-weight: 600;">Total to deliver:</span>
+                    <span style="font-weight: 700; color: #333;" id="displayTotal">0 cartons + 0 pieces</span>
+                </div>
+            </div>
+            
+            <div class="note" id="note">
+                ⚡ Select a tile size to begin
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default selection
+        let selectedTile = 40; // 40×40 by default
+        let tileArea = 0.16;
+        let piecesPerCarton = 5;
+
+        // Select tile function
+        function selectTile(size) {
+            selectedTile = size;
+            
+            // Update UI
+            document.getElementById('tile40').classList.remove('selected');
+            document.getElementById('tile50').classList.remove('selected');
+            
+            if (size === 40) {
+                document.getElementById('tile40').classList.add('selected');
+                tileArea = 0.16;
+                piecesPerCarton = 5;
+            } else {
+                document.getElementById('tile50').classList.add('selected');
+                tileArea = 0.25;
+                piecesPerCarton = 4;
+            }
+            
+            // Update selected info if result is visible
+            updateSelectedInfo();
+            
+            // Recalculate if there's already a value
+            const areaInput = document.getElementById('area');
+            if (areaInput.value) {
+                calculateTiles();
+            }
+        }
+
+        // Update selected info display
+        function updateSelectedInfo() {
+            const sizeText = selectedTile === 40 ? '40×40 cm' : '50×50 cm';
+            const piecesText = selectedTile === 40 ? '5 pcs/carton' : '4 pcs/carton';
+            
+            document.getElementById('selectedTileText').textContent = sizeText + ' selected';
+            document.getElementById('selectedBadge').textContent = piecesText;
+        }
+
+        // Calculate function
+        function calculateTiles() {
+            const areaInput = document.getElementById('area');
+            const area = parseFloat(areaInput.value);
+
+            // Validate input
+            if (isNaN(area) || area <= 0) {
+                alert('Please enter a valid area greater than 0');
+                return;
+            }
+
+            // Calculate exact pieces needed (including decimal)
+            const exactPieces = area / tileArea;
+            
+            // Round up to nearest whole piece (ceiling)
+            const totalPieces = Math.ceil(exactPieces);
+            
+            // Calculate cartons and individual pieces
+            const cartons = Math.floor(totalPieces / piecesPerCarton);
+            const individualPieces = totalPieces % piecesPerCarton;
+            
+            // Calculate total area that will be covered (for information)
+            const actualCoverage = totalPieces * tileArea;
+            const extraArea = actualCoverage - area;
+
+            // Display results
+            document.getElementById('displayArea').textContent = area.toFixed(2) + ' m²';
+            document.getElementById('displayPieces').textContent = totalPieces;
+            document.getElementById('displayCartons').textContent = cartons;
+            document.getElementById('displayIndividualPieces').textContent = individualPieces;
+            document.getElementById('displayTotal').textContent = cartons + ' cartons + ' + individualPieces + ' pieces';
+            
+            // Update note with extra information
+            const noteElement = document.getElementById('note');
+            const sizeName = selectedTile === 40 ? '40×40' : '50×50';
+            
+            if (extraArea > 0) {
+                noteElement.innerHTML = `⚡ Rounded up from ${exactPieces.toFixed(2)} to ${totalPieces} pieces (${sizeName} tiles)<br>📊 Extra area: ${extraArea.toFixed(2)} m² (${((extraArea/area)*100).toFixed(1)}% extra)`;
+            } else {
+                noteElement.innerHTML = `⚡ Exact calculation - no extra pieces needed (${sizeName} tiles)`;
+            }
+
+            // Show result section
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // Add animation
+            document.getElementById('resultSection').style.animation = 'none';
+            setTimeout(() => {
+                document.getElementById('resultSection').style.animation = 'fadeIn 0.5s';
+            }, 10);
+        }
+
+        // Initialize with 40×40 selected
+        document.addEventListener('DOMContentLoaded', function() {
+            selectTile(40);
+            
+            // Add Enter key functionality
+            document.getElementById('area').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    calculateTiles();
+                }
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
